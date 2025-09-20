@@ -1,0 +1,6 @@
+{
+  "status": "healthy",
+  "service": "integra-explorer-app",
+  "type": "static-application",
+  "timestamp": "BUILD_TIME_PLACEHOLDER"
+}

@@ -1,0 +1,48 @@
+{
+  "name": "integra-explorer-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && wrangler pages functions build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "deploy:staging": "npm run build && wrangler pages deploy dist --project-name integra-explorer-platform --branch staging",
+    "deploy:prod": "npm run build && wrangler pages deploy dist --project-name integra-explorer-platform --branch main"
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "^2.2.4",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@integraledger/document-processor-react": "^0.9.3",
+    "@integraledger/encrypt-decrypt": "^2.0.0",
+    "@integraledger/frontend-logger": "^1.0.0",
+    "@integraledger/service-registry": "^3.1.0",
+    "@integraledger/universal-document-viewer": "^0.3.0",
+    "@tanstack/react-query": "^4.36.0",
+    "@trpc/client": "^10.44.0",
+    "@trpc/react-query": "^10.44.0",
+    "axios": "^1.10.0",
+    "ethers": "6.15.0",
+    "framer-motion": "^11.0.14",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-dropzone": "^14.3.8",
+    "react-icons": "^5.0.1",
+    "react-router-dom": "^6.22.3",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "@trpc/server": "^10.44.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "wrangler": "^4.0.0"
+  }
+}

@@ -1,0 +1,62 @@
+name = "integra-explorer-platform"
+pages_build_output_dir = "./dist"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Development environment
+[vars]
+ENVIRONMENT = "development"
+
+# D1 Database bindings
+[[d1_databases]]
+binding = "DB_BLOCKCHAIN"
+database_name = "blockchain-index-dev"
+database_id = "c0f981d5-2667-4586-8647-30e7e21a4376"
+
+[[d1_databases]]
+binding = "DB_POOL"
+database_name = "pool-registry-dev"
+database_id = "e80648af-a11f-4437-94b1-93f590997f5d"
+
+# KV Namespaces
+[[kv_namespaces]]
+binding = "CACHE"
+id = "3a4495192e254661bc4fbce10e0f381d"
+
+# Preview Environment (staging)
+[env.preview]
+name = "integra-explorer-staging"
+vars = { ENVIRONMENT = "staging" }
+
+[[env.preview.d1_databases]]
+binding = "DB_BLOCKCHAIN"
+database_name = "blockchain-index-staging"
+database_id = "b16ac5b3-2ecf-41eb-8aee-683bedd3a5c3"
+
+[[env.preview.d1_databases]]
+binding = "DB_POOL"
+database_name = "pool-registry-staging"
+database_id = "59a21c09-71a3-4ee6-a5ca-27c3717d6046"
+
+[[env.preview.kv_namespaces]]
+binding = "CACHE"
+id = "3a4495192e254661bc4fbce10e0f381d"
+
+# Production Environment
+[env.production]
+name = "integra-explorer-prod"
+vars = { ENVIRONMENT = "production" }
+
+[[env.production.d1_databases]]
+binding = "DB_BLOCKCHAIN"
+database_name = "blockchain-index-prod"
+database_id = "74a74f57-3823-4439-868d-deb0e363cebd"
+
+[[env.production.d1_databases]]
+binding = "DB_POOL"
+database_name = "pool-registry-prod"
+database_id = "800da95f-f074-4b56-a840-612d0c87f77b"
+
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "3a4495192e254661bc4fbce10e0f381d"
