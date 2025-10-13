@@ -12,10 +12,16 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    host: true,
+    allowedHosts: [
+      '.trycloudflare.com',
+      'localhost',
+    ],
     proxy: {
       '/api': {
-        target: 'http://localhost:8788',
-        changeOrigin: true
+        target: 'https://dev-lv.integra-explorer-platform.pages.dev',
+        changeOrigin: true,
+        secure: true
       },
       '/v1': {
         target: 'https://tx.trustwithintegra.com',
