@@ -38,7 +38,7 @@ export function HeroSection({ selectedChain }: HeroSectionProps) {
             textAlign="center"
             px={{ base: 2, md: 0 }}
           >
-            Explore public blockchains for Integra document registrations $
+            Explore public blockchains for Integra document registrations *
           </Heading>
 
           <Box w="full" maxW="720px" px={{ base: 2, md: 0 }}>
