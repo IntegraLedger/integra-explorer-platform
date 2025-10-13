@@ -2,9 +2,9 @@ import { useState, useCallback, useRef } from 'react';
 import {
   Box,
   VStack,
+  HStack,
   Text,
   Button,
-  HStack,
   useColorModeValue,
   useToast,
   IconButton,
@@ -109,38 +109,42 @@ export function DocumentProcessor() {
   const resetDocument = () => {
     setDocument(null);
     setIsProcessing(false);
-    // Clear the file input value to allow re-selecting the same file
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
     navigate('/');
   };
 
-  const handleClick = () => {
-    if (!isProcessing && fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+  const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
     if (files && files.length > 0) {
       handleFileSelect(Array.from(files));
-      // Clear the input after processing to allow re-selecting the same file
-      e.target.value = '';
+    }
+    // Reset the input value to allow selecting the same file again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
   if (document && !isProcessing) {
     return (
       <Box maxW="600px" mx="auto">
-        <Box
-          bg={dropzoneBg}
-          border="2px dashed"
-          borderColor={borderColor}
-          borderRadius="lg"
-          overflow="hidden"
+        <FileDropZone
+          onFilesSelected={handleFileSelect}
+          accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md,.csv,.json,.xml,.doc,.docx,.xls,.xlsx"
+          maxSize={25 * 1024 * 1024}
+          multiple={false}
         >
+          <Box
+            bg={dropzoneBg}
+            border="2px dashed"
+            borderColor={borderColor}
+            borderRadius="lg"
+            overflow="hidden"
+            cursor="pointer"
+            transition="all 0.2s"
+            _hover={{
+              borderColor: hoverBorderColor,
+              transform: 'scale(1.02)',
+            }}
+          >
           {/* Header */}
           <Box p={4} borderBottom="1px" borderColor={borderColor} bg={bg}>
             <VStack align="start" spacing={0}>
@@ -153,10 +157,15 @@ export function DocumentProcessor() {
             </VStack>
           </Box>
 
-          {/* Document Viewer - Same height as dropzone */}
-          <Box
-            p={10}
-            sx={{
+            {/* Document Viewer - Same height as dropzone */}
+            <Box
+              as="label"
+              htmlFor="file-input-viewer"
+              p={10}
+              position="relative"
+              cursor="pointer"
+              display="block"
+              sx={{
               // Hide navigation controls in the document viewer
               '& .document-viewer-controls': {
                 display: 'none !important',
@@ -185,16 +194,29 @@ export function DocumentProcessor() {
               },
             }}
           >
-            <VStack spacing={4}>
-              <DocumentViewer
-                file={document.file}
-                onError={() => {
-                  // Silently handle errors - the DocumentViewer sometimes throws errors
-                  // even when the preview displays correctly, so we don't show a toast
-                }}
-                mode="full"
-              />
-            </VStack>
+              <VStack spacing={4}>
+                <DocumentViewer
+                  file={document.file}
+                  onError={(error) => {
+                    console.error('Document viewer error:', error);
+                    toast({
+                      title: 'Preview unavailable',
+                      description: 'Unable to display document preview',
+                      status: 'warning',
+                      duration: 3000,
+                    });
+                  }}
+                  mode="full"
+                />
+                <Text
+                  fontSize="sm"
+                  color={secondaryText}
+                  textAlign="center"
+                  mt={2}
+                >
+                  Click anywhere to select a different document
+                </Text>
+              </VStack>
           </Box>
 
           {/* SHA256 Hash Section */}
@@ -229,30 +251,45 @@ export function DocumentProcessor() {
                 </HStack>
               </VStack>
 
-              <Button
-                colorScheme="blue"
-                variant="solid"
-                onClick={resetDocument}
-                width="full"
-              >
-                Reset
-              </Button>
+              <HStack spacing={3} width="full">
+                <Button
+                  as="label"
+                  htmlFor="file-input-viewer"
+                  colorScheme="blue"
+                  variant="solid"
+                  flex={1}
+                  cursor="pointer"
+                >
+                  Select New Document
+                </Button>
+                <Button
+                  colorScheme="gray"
+                  variant="outline"
+                  onClick={resetDocument}
+                  flex={1}
+                >
+                  Reset
+                </Button>
+              </HStack>
             </VStack>
           </Box>
-        </Box>
+          </Box>
+        </FileDropZone>
+        {/* Hidden file input for document view mode */}
+        <input
+          ref={fileInputRef}
+          id="file-input-viewer"
+          type="file"
+          accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md,.csv,.json,.xml,.doc,.docx,.xls,.xlsx"
+          onChange={handleFileInputChange}
+          style={{ display: 'none' }}
+        />
       </Box>
     );
   }
 
   return (
     <Box maxW="600px" mx="auto">
-      <input
-        ref={fileInputRef}
-        type="file"
-        style={{ display: 'none' }}
-        accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md,.csv,.json,.xml,.doc,.docx,.xls,.xlsx"
-        onChange={handleFileInputChange}
-      />
       <FileDropZone
         onFilesSelected={handleFileSelect}
         accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md,.csv,.json,.xml,.doc,.docx,.xls,.xlsx"
@@ -260,14 +297,16 @@ export function DocumentProcessor() {
         multiple={false}
       >
         <Box
+          as="label"
+          htmlFor="file-input-initial"
           p={10}
           bg={dropzoneBg}
           border="2px dashed"
           borderColor={borderColor}
           borderRadius="lg"
           cursor={isProcessing ? 'not-allowed' : 'pointer'}
+          display="block"
           transition="all 0.2s"
-          onClick={handleClick}
           _hover={!isProcessing ? {
             borderColor: hoverBorderColor,
             transform: 'scale(1.02)',
@@ -322,6 +361,15 @@ export function DocumentProcessor() {
           </VStack>
         </Box>
       </FileDropZone>
+      {/* Hidden file input for initial selection */}
+      <input
+        id="file-input-initial"
+        type="file"
+        accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md,.csv,.json,.xml,.doc,.docx,.xls,.xlsx"
+        onChange={handleFileInputChange}
+        style={{ display: 'none' }}
+        disabled={isProcessing}
+      />
     </Box>
   );
 }
