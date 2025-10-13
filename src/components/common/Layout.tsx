@@ -16,7 +16,7 @@ export function Layout({ children, selectedChain, onChainSelect }: LayoutProps) 
     <Flex direction="column" minH="100vh">
       <Header selectedChain={selectedChain} onChainSelect={onChainSelect} />
       <HeroSection selectedChain={selectedChain} />
-      <Container maxW="container.xl" px={{ base: 4, md: 8 }} py={0} flex="1">
+      <Container maxW="80%" px={{ base: 4, md: 8 }} py={0} flex="1">
         <Grid
           templateColumns={{ base: '1fr', md: '1fr 3fr' }}
           gap={{ base: 0, md: 8 }}
