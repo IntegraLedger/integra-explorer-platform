@@ -101,6 +101,35 @@ jobs:
         run: |
           npx wrangler pages deploy dist --project-name=${{ env.PROJECT_NAME }} --branch=${{ github.ref_name }} --commit-dirty=true
 
+      - name: Visual Testing - Capture Screenshot
+        run: |
+          # Wait for deployment to propagate
+          sleep 10
+
+          # Determine the URL based on branch
+          if [[ "${{ github.ref_name }}" == "dev-lv" ]]; then
+            TEST_URL="https://dev-lv.${{ env.PROJECT_NAME }}.pages.dev"
+          else
+            TEST_URL="https://${{ env.PROJECT_NAME }}.pages.dev"
+          fi
+
+          echo "Capturing screenshot of: $TEST_URL"
+
+          # Call the screenshot worker
+          curl -f "https://integra-screenshot.dfisher-3f3.workers.dev/?url=$TEST_URL" \
+            -o screenshot-${{ github.ref_name }}-${{ github.sha }}.png
+
+          echo "Screenshot captured successfully"
+        continue-on-error: true
+
+      - name: Upload Screenshot Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshot-${{ github.ref_name }}-${{ github.sha }}
+          path: screenshot-${{ github.ref_name }}-${{ github.sha }}.png
+          retention-days: 30
+
       - name: Deployment Summary
         run: |
           echo "==============================================="
