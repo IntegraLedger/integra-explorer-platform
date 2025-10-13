@@ -125,7 +125,7 @@ export function DocumentProcessor() {
 
   if (document && !isProcessing) {
     return (
-      <Box maxW="600px" mx="auto">
+      <Box w="full">
         <FileDropZone
           onFilesSelected={handleFileSelect}
           accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md,.csv,.json,.xml,.doc,.docx,.xls,.xlsx"
@@ -289,7 +289,7 @@ export function DocumentProcessor() {
   }
 
   return (
-    <Box maxW="600px" mx="auto">
+    <Box w="full">
       <FileDropZone
         onFilesSelected={handleFileSelect}
         accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md,.csv,.json,.xml,.doc,.docx,.xls,.xlsx"
